@@ -123,8 +123,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ElevatedButton(
             child: const Text(
               'Sign Up',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             style: ElevatedButton.styleFrom(
               primary: Colors.purple,
