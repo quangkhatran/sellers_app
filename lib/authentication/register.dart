@@ -1,14 +1,18 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sellers_app/widgets/loading_dialog.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fStorage;
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../widgets/custom_text_field.dart';
 import '../widgets/error_dialog.dart';
+
+import '../mainScreens/home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -33,6 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   List<Placemark>? placeMarks;
 
   String sellerImageUrl = '';
+  String completeAddress = '';
 
   Future<void> _getImage() async {
     imageXFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -54,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       placeMarks = await placemarkFromCoordinates(
           position!.latitude, position!.longitude);
       Placemark pMark = placeMarks![0];
-      String completeAddress =
+      completeAddress =
           '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea} ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
       locationController.text = completeAddress;
     }
@@ -104,6 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             sellerImageUrl = url;
 
             // save info to firestore
+            authenticateSellerAndSignUp();
           });
         } else {
           showDialog(
@@ -127,6 +133,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       }
     }
+  }
+
+  void authenticateSellerAndSignUp() async {
+    User? currentUser;
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    await firebaseAuth
+        .createUserWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    )
+        .then(
+      (auth) {
+        currentUser = auth.user;
+      },
+    );
+
+    if (currentUser != null) {
+      saveDataToFirestore(currentUser!).then((value) {
+        Navigator.pop(context);
+        //send user to homepage
+        Route newRoute = MaterialPageRoute(builder: (c) => HomeScreen());
+        Navigator.pushReplacement(context, newRoute);
+      });
+    }
+  }
+
+  Future saveDataToFirestore(User currentUser) async {
+    FirebaseFirestore.instance.collection('sellers').doc(currentUser.uid).set({
+      'sellerUID': currentUser.uid,
+      'sellerEmail': currentUser.email,
+      'sellerName': nameController.text.trim(),
+      'sellerAvatarUrl': sellerImageUrl,
+      'phone': phoneController.text.trim(),
+      'address': completeAddress,
+      'status': 'approved',
+      'earnings': 0.0,
+      'lat': position!.latitude,
+      'lng': position!.longitude,
+    });
+
+    // save data locally
   }
 
   @override
