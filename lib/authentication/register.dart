@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:sellers_app/widgets/loading_dialog.dart';
+import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 
 import '../widgets/custom_text_field.dart';
 import '../widgets/error_dialog.dart';
@@ -29,6 +31,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Position? position;
   List<Placemark>? placeMarks;
+
+  String sellerImageUrl = '';
 
   Future<void> _getImage() async {
     imageXFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -74,7 +78,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
             phoneController.text.isNotEmpty &&
             locationController.text.isNotEmpty) {
           // start uploading image
+          showDialog(
+            context: context,
+            builder: (c) {
+              return LoadingDialog(
+                message: 'Registering Account',
+              );
+            },
+          );
 
+          String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+          fStorage.Reference reference = fStorage.FirebaseStorage.instance
+              .ref()
+              .child('sellers')
+              .child(fileName);
+
+          fStorage.UploadTask uploadTask =
+              reference.putFile(File(imageXFile!.path));
+
+          fStorage.TaskSnapshot taskSnapshot =
+              await uploadTask.whenComplete(() {});
+
+          await taskSnapshot.ref.getDownloadURL().then((url) {
+            sellerImageUrl = url;
+
+            // save info to firestore
+          });
         } else {
           showDialog(
             context: context,
