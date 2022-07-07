@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "220148377105",
+    "project_id": "localfun-8ad8f",
+    "storage_bucket": "localfun-8ad8f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220148377105:android:57bbca9bbc3583e1f4f3b0",
+        "android_client_info": {
+          "package_name": "com.quangkhatran.sellersapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "220148377105-01ciaod5gnlcs4f2h68tjcj5426k1mun.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxh9w9u8E2z2p013JPJ6A3LOm9HZKAzrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "220148377105-01ciaod5gnlcs4f2h68tjcj5426k1mun.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
