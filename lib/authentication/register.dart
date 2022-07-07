@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../widgets/custom_text_field.dart';
 
@@ -24,12 +26,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
 
+  Position? position;
+  List<Placemark>? placeMarks;
+
   Future<void> _getImage() async {
     imageXFile = await _picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       imageXFile;
     });
+  }
+
+  getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      Position newPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: Duration(seconds: 10),
+      );
+      position = newPosition;
+      placeMarks = await placemarkFromCoordinates(
+          position!.latitude, position!.longitude);
+      Placemark pMark = placeMarks![0];
+      String completeAddress =
+          '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea} ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
+      locationController.text = completeAddress;
+    }
   }
 
   @override
@@ -101,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: locationController,
                   hintText: 'Cafe/Restaurant Address',
                   isObscured: false,
-                  enabled: false,
+                  enabled: true,
                 ),
                 Container(
                   width: 400,
@@ -116,7 +139,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Icons.location_on,
                       color: Colors.white,
                     ),
-                    onPressed: () => print('clicked'),
+                    onPressed: () {
+                      getCurrentLocation();
+                    },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.amber,
                       shape: RoundedRectangleBorder(
