@@ -167,7 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       saveDataToFirestore(currentUser!).then((value) {
         Navigator.pop(context);
         //send user to homepage
-        Route newRoute = MaterialPageRoute(builder: (c) => HomeScreen());
+        Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
         Navigator.pushReplacement(context, newRoute);
       });
     }
@@ -264,7 +264,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: locationController,
                   hintText: 'Cafe/Restaurant Address',
                   isObscured: false,
-                  enabled: true,
+                  enabled: false,
                 ),
                 Container(
                   width: 400,
