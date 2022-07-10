@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sellers_app/authentication/auth_screen.dart';
+
 import '../global/global.dart';
+
+import '../uploadScreens/menus_upload_screen.dart';
+import '../widgets/my_drawer.dart';
+import '../authentication/auth_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MyDrawer(),
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -30,24 +35,27 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: Text(
           sharedPreferences!.getString('name')!,
+          style: const TextStyle(
+            fontSize: 30,
+            fontFamily: 'Lobster',
+          ),
         ),
         centerTitle: true,
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text('Logout'),
-          style: ElevatedButton.styleFrom(
-            primary: Colors.amber,
-          ),
-          onPressed: () {
-            firebaseAuth.signOut().then((value) {
+        automaticallyImplyLeading: true,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.post_add,
+              color: Colors.cyan,
+            ),
+            onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (c) => const AuthScreen()));
-            });
-          },
-        ),
+                  MaterialPageRoute(builder: (c) => const MenusUploadScreen()));
+            },
+          ),
+        ],
       ),
+      body: Center(),
     );
   }
 }
