@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 
 import '../global/global.dart';
 import '../mainScreens/home_screen.dart';
+import '../widgets/error_dialog.dart';
+import '../widgets/progress_bar.dart';
 
 class MenusUploadScreen extends StatefulWidget {
   const MenusUploadScreen({Key? key}) : super(key: key);
@@ -19,6 +21,8 @@ class _MenusUploadScreenState extends State<MenusUploadScreen> {
 
   TextEditingController shortInfoController = TextEditingController();
   TextEditingController titleController = TextEditingController();
+
+  bool uploading = false;
 
   defaultScreen() {
     return Scaffold(
@@ -221,12 +225,13 @@ class _MenusUploadScreenState extends State<MenusUploadScreen> {
                 letterSpacing: 3,
               ),
             ),
-            onPressed: () {},
+            onPressed: uploading ? null : () => validateUploadForm(),
           ),
         ],
       ),
       body: ListView(
         children: [
+          uploading == true ? linearProgress() : Text(''),
           Container(
             height: 230,
             width: MediaQuery.of(context).size.width * 0.8,
@@ -305,6 +310,38 @@ class _MenusUploadScreenState extends State<MenusUploadScreen> {
       titleController.clear();
       imageXFile = null;
     });
+  }
+
+  validateUploadForm() {
+    if (imageXFile != null) {
+      if (shortInfoController.text.isNotEmpty &&
+          titleController.text.isNotEmpty) {
+        setState(() {
+          uploading = true;
+        });
+        // upload image
+        // save info to firebase
+
+      } else {
+        showDialog(
+          context: context,
+          builder: (c) {
+            return ErrorDialog(
+              message: 'Please write title and info for menu.',
+            );
+          },
+        );
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (c) {
+          return ErrorDialog(
+            message: 'Please pick an image for menu.',
+          );
+        },
+      );
+    }
   }
 
   @override
