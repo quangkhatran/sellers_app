@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sellers_app/mainScreens/home_screen.dart';
 
 import '../global/global.dart';
 import '../authentication/auth_screen.dart';
@@ -44,7 +45,6 @@ class MyDrawer extends StatelessWidget {
             ],
           ),
         ),
-
         const SizedBox(
           height: 12,
         ),
@@ -69,7 +69,12 @@ class MyDrawer extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()));
+                  },
                 ),
                 Divider(
                   height: 10,
