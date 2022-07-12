@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../mainScreens/itemsScreen.dart';
 import '../model/menus.dart';
 
 class InfoDesignWidget extends StatefulWidget {
@@ -15,6 +15,12 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (c) => ItemsScreen(model: widget.model)));
+      },
       splashColor: Colors.amber,
       child: Padding(
         padding: const EdgeInsets.all(5.0),
@@ -33,12 +39,12 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                 height: 210.0,
                 fit: BoxFit.cover,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 1.0,
               ),
               Text(
                 widget.model!.menuTitle!,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.cyan,
                   fontSize: 20,
                   fontFamily: 'Train',
@@ -46,7 +52,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
               ),
               Text(
                 widget.model!.menuInfo!,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 12,
                   fontFamily: 'Train',
