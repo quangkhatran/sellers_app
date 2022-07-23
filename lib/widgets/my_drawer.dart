@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sellers_app/mainScreens/home_screen.dart';
+import 'package:sellers_app/mainScreens/new_orders_screen.dart';
 
 import '../global/global.dart';
 import '../authentication/auth_screen.dart';
@@ -110,7 +111,12 @@ class MyDrawer extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NewOrdersScreen()));
+                  },
                 ),
                 Divider(
                   height: 10,
