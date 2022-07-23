@@ -20,9 +20,6 @@ class ShipmentAddressDesign extends StatelessWidget {
     this.orderByUser,
   });
 
-  confirmedParcelShipment(BuildContext context, String getOrderID,
-      String sellerId, String purchaserId) {}
-
   @override
   Widget build(BuildContext context) {
     return Column(
