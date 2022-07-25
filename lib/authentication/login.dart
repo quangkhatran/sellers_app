@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../global/global.dart';
 
@@ -83,28 +84,36 @@ class _LoginScreenState extends State<LoginScreen> {
         .get()
         .then((snapshot) async {
       if (snapshot.exists) {
-        await sharedPreferences!.setString(
-          'uid',
-          currentUser.uid,
-        );
-        await sharedPreferences!.setString(
-          'email',
-          snapshot.data()!['sellerEmail'],
-        );
-        await sharedPreferences!.setString(
-          'name',
-          snapshot.data()!['sellerName'],
-        );
-        await sharedPreferences!.setString(
-          'photoUrl',
-          snapshot.data()!['sellerAvatarUrl'],
-        );
+        if (snapshot.data()!['status'] == 'approved') {
+          await sharedPreferences!.setString(
+            'uid',
+            currentUser.uid,
+          );
+          await sharedPreferences!.setString(
+            'email',
+            snapshot.data()!['sellerEmail'],
+          );
+          await sharedPreferences!.setString(
+            'name',
+            snapshot.data()!['sellerName'],
+          );
+          await sharedPreferences!.setString(
+            'photoUrl',
+            snapshot.data()!['sellerAvatarUrl'],
+          );
 
-        Navigator.pop(context);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (c) => const HomeScreen()),
-        );
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (c) => const HomeScreen()),
+          );
+        } else {
+          firebaseAuth.signOut();
+          Navigator.pop(context);
+          Fluttertoast.showToast(
+              msg:
+                  'Admin has blocked your account. \n\nEmail here: admin1@gmail.com');
+        }
       } else {
         firebaseAuth.signOut();
         Navigator.pop(context);
