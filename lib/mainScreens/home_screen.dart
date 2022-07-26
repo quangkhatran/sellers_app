@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sellers_app/widgets/info_design.dart';
 import 'package:sellers_app/widgets/text_widget.dart';
 
 import '../global/global.dart';
 
+import '../splashScreen/splash_screen.dart';
 import '../uploadScreens/menus_upload_screen.dart';
 import '../widgets/my_drawer.dart';
 import '../widgets/progress_bar.dart';
@@ -21,6 +23,32 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  RestrictBlockedSellersFromUsingApp() async {
+    await FirebaseFirestore.instance
+        .collection('sellers')
+        .doc(firebaseAuth.currentUser!.uid)
+        .get()
+        .then(
+      (snapshot) {
+        if (snapshot.data()!['status'] != 'approved') {
+          Fluttertoast.showToast(
+              msg: 'You have been blocked. \n\nEmail here: admin1@gmail.com');
+
+          firebaseAuth.signOut();
+          Navigator.push(context,
+              MaterialPageRoute(builder: (c) => const MySplashScreen()));
+        }
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    RestrictBlockedSellersFromUsingApp();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
